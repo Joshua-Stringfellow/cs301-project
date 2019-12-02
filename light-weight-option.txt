@@ -1,0 +1,78 @@
+Queries for Phase III
+
+USER LOGIN
+select *
+from users
+where username='' and password='';
+
+--Fix me--
+REGISTER BUYER
+insert into users (username, password, user_type, email, fname, lname) values ('', '', 'buyer', '', '', '');
+
+insert into addresses (address_id, house_number, street, city, state, zipcode) values (NULL, '', '', '', '', '');
+
+insert into buyers (buyer_username, phone, buyer_address, default_payment, default_store_id) values ('','',
+(select address_id
+from addresses as A, users as U
+where U.username = ''), NULL, NULL);
+
+--Fix me--
+REGISTER DELIVERER
+insert into users (username, password, user_type, email, fname, lname) values ('', '', 'deliverer', '', '', '');
+
+--Fix me--
+REGISTER MANAGER
+insert into users (username, password, user_type, email, fname, lname) values ('', '', 'manager', '', '', '');
+
+insert into manages (manager_username, store_address) values ('',
+(select address_id
+from addresses as A, users as U
+where U.username = ''));
+
+FIND ITEMS
+SELECT * 
+FROM sold_at AS S, items as I 
+WHERE S.store_id='' AND S.item_id = I.item_id AND I.food_group='';
+
+DISPLAY TOTAL PRICE
+SELECT SUM(S.quantity * I.listed_price) price 
+FROM select_item as S LEFT JOIN items as I USING(item_id) 
+WHERE S.order_id='';
+
+CHOOSE STORE
+Display Stores Nearby
+SELECT G.store_name, G.store_id, G.address_id, A.house_number, A.street, A.city, A.state, A.zipcode, G.opening_time, G.closing_time, G.phone 
+from grocery_store AS G, addresses as A 
+WHERE G.address_id=A.address_id AND A.city='' AND A.state='';
+
+NEW PAYMENT
+INSERT INTO payments(username, payment_name, account_number, routing_number) VALUES ('','','','');
+
+SET DEFAULT PAYMENT
+UPDATE buyers SET default_payment='' WHERE username='';
+
+FIND DEFAULT PAYMENT
+SELECT default_payment FROM buyers WHERE username='';
+
+DISPLAY USER'S PAYMENT METHODS
+SELECT * FROM payments WHERE username='';
+
+DISPLAY PAYMENT METHODS AS DEFAULT AND OTHERS:
+SELECT * 
+FROM payments as P, buyers as B 
+WHERE P.username='' AND P.username=B.username;
+
+DISPLAY CART ITEMS
+SELECT S.quantity sel_quantity, S.item_id, I.item_name, I.quantity, I.description, I.exp_date, I.listed_price 
+FROM select_item AS S, items AS I 
+WHERE S.order_id='' AND S.item_id=I.item_id;
+
+COUNT TOTAL CART ITEMS
+SELECT COALESCE(SUM(quantity),0) TotalItems 
+FROM select_item 
+WHERE order_id='';
+
+DELETE FROM CART
+DELETE FROM select_item 
+WHERE order_id='' AND item_id='';
+
